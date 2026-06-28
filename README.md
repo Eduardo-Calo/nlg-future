@@ -1,6 +1,6 @@
-# The Future of NLG in the Age of LLMs
+# The Future of Natural Language Generation in the Age of Large Language Models
 
-This is the code accompanying the paper "The Future of NLG in the Age of LLMs". In this paper, we perform a literature research to study the changing trends in the field of Natural Language Generation (NLG) and discuss the implications deriving from this. The code is released mainly for reproducibility purposes.
+This is the code accompanying the paper "The Future of Natural Language Generation in the Age of Large Language Models". In this paper, we perform a literature research to study the changing trends in the field of Natural Language Generation (NLG) and discuss the implications deriving from this. The code is released mainly for reproducibility purposes.
 
 ## Setup
 
