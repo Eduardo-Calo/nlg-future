@@ -1,7 +1,14 @@
 import re
+import random
 import pandas as pd
 from pybtex.database import parse_file, BibliographyData
 from typing import List, Tuple, Optional, Union
+from sklearn.metrics import cohen_kappa_score, accuracy_score
+import plotly.graph_objects as go
+import numpy as np
+
+
+random.seed(42)  # For reproducibility of sampling
 
 
 def analyze_hybrid_cooccurrence(
@@ -287,6 +294,112 @@ def count_topic_matches(filtered_entries, topics_to_analyze, year_ranges=None):
     return papers_with_matches, papers_without_matches, total_matches
 
 
+def stratified_sample_papers(
+    filtered_entries,
+    topics_to_analyze: List[Union[str, List[str]]],
+    year_ranges: Union[Tuple[int, int], List[Tuple[int, int]]],
+    samples_per_group: int = 15,
+) -> List[Tuple]:
+    """
+    Sample papers from filtered_entries stratified by:
+    - Time period (e.g., 1965-2020 vs 2021-2025)
+    - Topic match status (has match vs no match)
+    
+    Args:
+        filtered_entries: List of (entry, fields, year) tuples
+        topics_to_analyze: List of topics to check for matches
+        year_ranges: Tuple or list of (start, end) tuples for time periods
+        samples_per_group: Number of samples to draw from each stratum (default: 15)
+    
+    Returns:
+        List of sampled (entry, fields, year) tuples (total: 4 * samples_per_group)
+    """
+    # Normalize year_ranges to list of tuples
+    if isinstance(year_ranges, tuple) and len(year_ranges) == 2 and isinstance(year_ranges[0], int):
+        ranges = [year_ranges]
+    else:
+        ranges = list(year_ranges)
+    
+    if len(ranges) != 2:
+        raise ValueError("This function requires exactly 2 time periods")
+    
+    # Create 4 groups: (period_idx, has_match) -> list of entries
+    groups = {}
+    for period_idx in range(2):
+        for has_match in [True, False]:
+            groups[(period_idx, has_match)] = []
+    
+    # Categorize each entry
+    for entry, fields, year in filtered_entries:
+        # Determine which period this entry belongs to
+        period_idx = next(
+            (i for i, (start, end) in enumerate(ranges) if start <= year <= end),
+            -1
+        )
+        if period_idx == -1:
+            continue
+        
+        # Check if entry has topic matches
+        matched_topics = []
+        text_to_search = f"{fields.get('title', '')} {fields.get('abstract', '')}"
+        
+        for topic in topics_to_analyze:
+            if isinstance(topic, list):
+                pattern = re.compile(
+                    r'\b(' + '|'.join(re.escape(p) for p in topic) + r')\b',
+                    re.IGNORECASE
+                )
+                if pattern.search(text_to_search):
+                    matched_topics.append(topic[0])
+            else:
+                pattern = re.compile(r'\b' + re.escape(topic) + r'\b', re.IGNORECASE)
+                if pattern.search(text_to_search):
+                    matched_topics.append(topic)
+        
+        has_match = bool(matched_topics)
+        groups[(period_idx, has_match)].append((entry, fields, year, matched_topics))
+    
+    # Sample from each group
+    sampled_papers = {}
+    for period_idx in range(2):
+        for has_match in [True, False]:
+            group = groups[(period_idx, has_match)]
+            num_to_sample = min(samples_per_group, len(group))
+            if num_to_sample > 0:
+                sampled = random.sample(group, num_to_sample)
+                sampled_papers[(period_idx, has_match)] = sampled
+                
+                period_name = f"{ranges[period_idx][0]}-{ranges[period_idx][1]}"
+                match_status = "with match" if has_match else "without match"
+                print(f"Sampled {num_to_sample} papers from {period_name} {match_status} "
+                      f"(available: {len(group)})")
+                
+    # create excel
+
+    rows = []
+
+    for (period_idx, has_match), papers in sampled_papers.items():
+
+        period_label = f"{year_ranges[period_idx][0]}-{year_ranges[period_idx][1]}"
+
+        for entry, fields, year, matched_topics in papers:
+
+            rows.append({
+                "title": fields.get("title", ""),
+                "url": fields.get("url", entry.get("url", "") if isinstance(entry, dict) else ""),
+                "period": period_label,
+                "topic/s": "; ".join(matched_topics) if matched_topics else "",
+                "Edu": "",
+                "Saad": ""
+            })
+
+    df = pd.DataFrame(rows)
+
+    df.to_excel("sampled_papers.xlsx", index=False)
+    
+    return sampled_papers
+
+
 def extract_acl_id_from_url(url: str) -> Optional[str]:
     """
     Extract ACL ID from ACL Anthology URL.
@@ -389,7 +502,45 @@ def count_abstracts_by_period(bib_data: 'BibliographyData', year_ranges: Union[T
     return with_abstract, without_abstract
 
 
-# Parse the bibliography data
+def compute_kappa(df, col1="Saad", col2="Edu"):
+    """
+    Computes Cohen's kappa between two annotation columns.
+
+    Expected values: TRUE/FALSE (case-insensitive).
+    """
+
+    data = df[[col1, col2]].dropna().copy()
+
+    data[col1] = data[col1].astype(str).str.upper()
+    data[col2] = data[col2].astype(str).str.upper()
+
+    return cohen_kappa_score(data[col1], data[col2])
+
+
+def compute_accuracy(df,
+                     saad_col="Saad",
+                     edu_col="Edu",
+                     topics_col="topic/s"):
+
+    data = df[[saad_col, edu_col, topics_col]].copy()
+
+    data[saad_col] = data[saad_col].astype(str).str.upper()
+    data[edu_col] = data[edu_col].astype(str).str.upper()
+
+    # keep only rows where annotators agree
+    data = data[data[saad_col] == data[edu_col]]
+    print(f"Number of rows where annotators agree: {len(data)}")
+
+    # gold label
+    gold = data[saad_col]
+
+    # prediction: at least one topic found
+    pred = data[topics_col].apply(lambda x: "FALSE" if x != x else "TRUE")  # x != x is true for NaN
+
+    return accuracy_score(gold, pred)
+
+
+# --- Parse the bibliography data ---
 
 print("Parsing bibliography data...")
 bib_data = parse_file("anthology.bib")
@@ -405,7 +556,8 @@ print(f"Abstracts added: {added}")
 print(f"Abstracts after enrichment: {abstracts_after}")
 print(f"Papers matched from parquet: {matched}")
 
-# --- Example Usage ---
+
+# --- Usage ---
 
 # Define the topics and other parameters for the analysis
 anchors = [
@@ -419,13 +571,11 @@ topics_to_analyze = [
     "argument mining",
     "authorship verification",
     "automated essay scoring",
-    "automatic evaluation",
     ["automatic speech recognition", "ASR", "speech-to-text", "speech recognition", "speech segmentation"],
     "bias detection",
-    "lexicon induction",
     "code generation",
     "commonsense reasoning",
-    "content determination",
+    ["content determination", "content selection", "content planning", "content specification"],
     ["coreference resolution", "anaphora resolution", "pronominal resolution"],
     "data augmentation",
     "data-to-text",
@@ -434,6 +584,7 @@ topics_to_analyze = [
     ["discourse parsing", "discourse analysis"],
     "discourse planning",
     ["entity linking", "entity disambiguation", "named entity linking"],
+    "evaluation",
     "event extraction",
     ["fake news detection", "misinformation detection", "rumor detection"],
     "figurative language",
@@ -441,8 +592,7 @@ topics_to_analyze = [
     ["grammatical error correction", "GEC"],
     ["hallucination detection", "hallucination"],
     ["hate speech detection", "abusive language detection"],
-    "human evaluation",
-    "image captioning",
+    ["image captioning", "captioning", "caption generation", "image-caption"],
     ["information extraction", "IE"],
     ["information retrieval", "IR"],
     "intent detection",
@@ -450,12 +600,14 @@ topics_to_analyze = [
     ["language change", "diachronic NLP", "historical NLP"],
     ["language identification", "language detection"],
     ["lemmatization", "lemmatisation"],
-    ["lexicalization", "lexicalisation"],
+    ["lexicalization", "lexicalisation", "lexical choice"],
+    "lexicon induction",
     ["long form question answering", "generative QA"],
     "lyrics generation",
     ["machine translation", "MT"],
     "mathematical question answering",
     "mathematical reasoning",
+    "multilingual generation",
     "multiple choice question answering",
     ["named entity recognition", "NER", "named entities", "entity extraction"],
     ["natural language inference", "NLI", "textual entailment", "RTE"],
@@ -469,7 +621,7 @@ topics_to_analyze = [
     "recommender systems",
     "referring expression generation",
     "relation extraction",
-    ["semantic parsing", "meaning representation parsing"],
+    ["semantic parsing", "meaning representation parsing", "semantic parser"],
     ["semantic role labeling", "SRL"],
     "sentence segmentation",
     ["sentiment analysis", "opinion mining", "polarity classification"],
@@ -479,14 +631,14 @@ topics_to_analyze = [
     "stemming",
     "story generation",
     "style transfer",
-    ["surface realization", "surface realisation", "linguistic realisation", "linguistic realization"],
+    ["surface realization", "surface realisation", "linguistic realisation", "linguistic realization", "microplanning", "micro-planning", "sentence planning", "verbalization"],
     ["syntactic parsing", "dependency parsing", "constituency parsing"],
     ["taxonomy construction", "ontology induction"],
     "terminology extraction",
     ["text classification", "document classification"],
     "text clustering",
     "text simplification",
-    ["text summarization", "text summarisation"],
+    ["text summarization", "text summarisation", "abstractive summarization", "extractive summarization"],
     "tokenization",
     ["topic modeling", "LDA"],
     ["toxicity understanding", "offensive language detection"],
@@ -620,8 +772,8 @@ print("\n" + "="*80 + "\n")
 
 print_sample_papers(llm_filtered, topics_to_analyze, "LLM Domain")
 
+
 # --- Grouped horizontal bar chart: Gen 1965-2020 / Gen 2021-2025 / Gen+LLM 2021-2025 ---
-import plotly.graph_objects as go
 
 bar_data = []
 all_topics = sorted(set(gen_df.index) | set(gen_llm_df.index))
@@ -673,8 +825,8 @@ fig_bar.update_layout(
     bargroupgap=0.08,
     bargap=0.17,
     template="plotly_white",
-    font=dict(size=21),
-    uniformtext_minsize=19,
+    font=dict(size=17),
+    uniformtext_minsize=17,
     uniformtext_mode="show",
     width=1900,
     height=1300,
@@ -684,3 +836,93 @@ fig_bar.write_html("topic_bar_chart.html")
 fig_bar.write_image("topic_bar_chart.pdf")
 fig_bar.show()
 print("Bar chart saved to topic_bar_chart.html and topic_bar_chart.pdf")
+
+
+# --- Stratified sampling for qualitative analysis ---
+
+sampled = stratified_sample_papers(
+    filtered_entries=gen_filtered,
+    topics_to_analyze=topics_to_analyze,
+    year_ranges=comparison_year_ranges,
+    samples_per_group=15
+)
+print("\nSampled papers for qualitative analysis:")
+for (period_idx, has_match), papers in sampled.items():
+    period_name = f"{comparison_year_ranges[period_idx][0]}-{comparison_year_ranges[period_idx][1]}"
+    match_status = "with topic match" if has_match else "without topic match"
+    print(f"\nPeriod {period_name} {match_status}")
+    for i, (entry, fields, year, matched_topics) in enumerate(papers):
+        print(f"  {i+1}. {fields.get('title', 'N/A')} ({year}) - URL: {fields.get('url', 'N/A')} - Matched topics: {matched_topics if matched_topics else 'None'}")
+
+# Compute IAA and Acc.
+df = pd.read_csv("eval.csv")
+kappa = compute_kappa(df)
+print(f"Cohen's κ = {kappa:.3f}")
+
+accuracy = compute_accuracy(df)
+print(f"Accuracy = {accuracy:.3f}")
+
+
+# --- Yearly line chart for topic proportions over time ---
+
+RANGE = 5
+
+if RANGE == 0:
+    yearly_ranges = [(y, y) for y in range(1965, 2026)]  # Individual years
+elif RANGE == 5:
+    yearly_ranges = [(1965, 1970),
+                     (1971, 1975),
+                     (1976, 1980),
+                     (1981, 1985),
+                     (1986, 1990),
+                     (1991, 1995),
+                     (1996, 2000),
+                     (2001, 2005),
+                     (2006, 2010),
+                     (2011, 2015),
+                     (2016, 2020),
+                     (2021, 2025)]
+
+yearly_df, yearly_totals, _, yearly_counts = analyze_hybrid_cooccurrence(
+    bib_data=bib_data,
+    foundational_topics=[anchors[1]],  # NLG
+    co_occurring_topics=topics_to_analyze,
+    year_ranges=yearly_ranges,
+)
+
+TOP_N = 10
+
+top_topics = gen_df.mean(axis=1).sort_values(ascending=False).head(TOP_N).index  # top topics based on average proportion across all periods
+
+years = [f"{start}-{end}" for start, end in yearly_ranges]
+
+fig = go.Figure()
+
+for topic in top_topics:
+    values = [
+        yearly_df.loc[topic, f"{start}-{end}"] * 100 if topic in yearly_df.index else 0.0
+        for start, end in yearly_ranges
+    ]
+
+    fig.add_trace(
+        go.Scatter(
+            x=years,
+            y=values,
+            mode="lines+markers",
+            name=topic,
+        )
+    )
+
+fig.update_layout(
+    xaxis_title="Year range",
+    yaxis_title="% of papers",
+    template="plotly_white",
+    width=1400,
+    height=800,
+    font=dict(size=16),
+)
+
+fig.write_html("task_trends.html")
+fig.write_image("task_trends.pdf")
+fig.show()
+print("Yearly line chart saved to task_trends.html and task_trends.pdf")

@@ -1,0 +1,61 @@
+title,url,period,topic/s,anno1,anno2
+Generation by Inverting a Semantic Parser that Uses Statistical Machine Translation,https://aclanthology.org/N07-1022/,1965-2020,evaluation; machine translation; semantic parsing,TRUE,TRUE
+A Human Evaluation of {AMR}-to-{E}nglish Generation Systems,https://aclanthology.org/2020.coling-main.420/,1965-2020,evaluation,TRUE,TRUE
+Viable Threat on News Reading: Generating Biased News Using Natural Language Models,https://aclanthology.org/2020.nlpcss-1.7/,1965-2020,evaluation,TRUE,TRUE
+Evaluation Metrics for Generation,https://aclanthology.org/W00-1401/,1965-2020,evaluation,TRUE,TRUE
+{R}ank{ME}: Reliable Human Ratings for Natural Language Generation,https://aclanthology.org/N18-2012/,1965-2020,evaluation,TRUE,TRUE
+A Master-Apprentice Approach to Automatic Creation of Culturally Satirical Movie Titles,https://aclanthology.org/W18-6534/,1965-2020,evaluation,TRUE,TRUE
+Describing a Knowledge Base,https://aclanthology.org/W18-6502/,1965-2020,evaluation,TRUE,TRUE
+Zero-shot {C}hinese Discourse Dependency Parsing via Cross-lingual Mapping,https://aclanthology.org/W19-8104/,1965-2020,discourse parsing; syntactic parsing,TRUE,TRUE
+Multidocument Summarization via Information Extraction,https://aclanthology.org/H01-1054/,1965-2020,information extraction,TRUE,TRUE
+{UNION}: {A}n {U}nreferenced {M}etric for {E}valuating {O}pen-ended {S}tory {G}eneration,https://aclanthology.org/2020.emnlp-main.736/,1965-2020,story generation,TRUE,TRUE
+Natural Language Directed Inference in the Presentation of Ontologies,https://aclanthology.org/W05-1613/,1965-2020,content determination,TRUE,TRUE
+Natural Language Generation in the {IBM} Flight Information System,https://aclanthology.org/W00-0305/,1965-2020,aggregation,TRUE,TRUE
+Cross-linguistic Attribute Selection for {REG}: Comparing {D}utch and {E}nglish,https://aclanthology.org/W10-4221/,1965-2020,referring expression generation,TRUE,TRUE
+Evaluation rules! On the use of grammars and rule-based systems for {NLG} evaluation,https://aclanthology.org/2020.evalnlgeval-1.3/,1965-2020,evaluation,TRUE,TRUE
+An Investigation into the Validity of Some Metrics for Automatically Evaluating Natural Language Generation Systems,https://aclanthology.org/J09-4008/,1965-2020,evaluation,TRUE,TRUE
+Precision and Mathematical Form in First and Subsequent Mentions of Numerical Facts and their Relation to Document Structure,https://aclanthology.org/W09-0620/,1965-2020,,FALSE,TRUE
+Bringing Roguelikes to Visually-Impaired Players by Using {NLP},https://aclanthology.org/2020.gamnlp-1.9/,1965-2020,,FALSE,TRUE
+Transformer based Natural Language Generation for Question-Answering,https://aclanthology.org/2020.inlg-1.41/,1965-2020,,TRUE,TRUE
+Hotel Scribe: Generating High Variation Hotel Descriptions,https://aclanthology.org/W19-8647/,1965-2020,,TRUE,TRUE
+Generating Answering Patterns from Factoid {A}rabic Questions,https://aclanthology.org/W17-3803/,1965-2020,,TRUE,TRUE
+Piecewise Latent Variables for Neural Variational Text Processing,https://aclanthology.org/D17-1043/,1965-2020,,FALSE,FALSE
+Proceedings of the Fourth International Natural Language Generation Conference,https://aclanthology.org/W06-1400/,1965-2020,,FALSE,FALSE
+Book Reviews: Building Natural Language Generation Systems,https://aclanthology.org/J01-2008/,1965-2020,,FALSE,FALSE
+{D}a{M}ata: A Robot-Journalist Covering the {B}razilian {A}mazon Deforestation,https://aclanthology.org/2020.inlg-1.15/,1965-2020,,TRUE,TRUE
+Acquiring and Using Limited User Models in {NLG},https://aclanthology.org/W03-2312/,1965-2020,,FALSE,FALSE
+Say the Right Thing Right: Ethics Issues in Natural Language Generation Systems,https://aclanthology.org/W17-1613/,1965-2020,,FALSE,FALSE
+Building Underlying Structures for Multiparagraph Texts,https://aclanthology.org/W94-0303/,1965-2020,,TRUE,TRUE
+Natural Language Generation,https://aclanthology.org/W98-1400/,1965-2020,,FALSE,FALSE
+Author Index,https://aclanthology.org/W96-0419/,1965-2020,,FALSE,FALSE
+{HYPERBUG}: A Scalable Natural Language Generation Approach,https://aclanthology.org/W04-2809/,1965-2020,,TRUE,TRUE
+Semantic Accuracy in Natural Language Generation: A Thesis Proposal,https://aclanthology.org/2023.acl-srw.48/,2021-2025,evaluation,TRUE,TRUE
+{MASIVE}: Open-Ended Affective State Identification in {E}nglish and {S}panish,https://aclanthology.org/2024.emnlp-main.1139/,2021-2025,machine translation,TRUE,TRUE
+Amortized Noisy Channel Neural Machine Translation,https://aclanthology.org/2022.inlg-main.11/,2021-2025,machine translation,TRUE,TRUE
+Enriching the {E}2{E} dataset,https://aclanthology.org/2021.inlg-1.18/,2021-2025,data-to-text; lexicalization; referring expression generation,TRUE,TRUE
+Models of reference production: How do they withstand the test of time?,https://aclanthology.org/2023.inlg-main.7/,2021-2025,evaluation,TRUE,TRUE
+Analyzing the Effect of Linguistic Instructions on Paraphrase Generation,https://aclanthology.org/2025.nodalida-1.75/,2021-2025,paraphrasing,TRUE,TRUE
+Towards Effective Long Conversation Generation with Dynamic Topic Tracking and Recommendation,https://aclanthology.org/2024.inlg-main.43/,2021-2025,evaluation,TRUE,TRUE
+Transfer Learning and Masked Generation for Answer Verbalization,https://aclanthology.org/2022.suki-1.6/,2021-2025,evaluation; surface realization,TRUE,TRUE
+Balancing the Effect of Training Dataset Distribution of Multiple Styles for Multi-Style Text Transfer,https://aclanthology.org/2023.findings-acl.243/,2021-2025,style transfer,TRUE,TRUE
+Referring Expression Generation in Visually Grounded Dialogue with Discourse-aware Comprehension Guiding,https://aclanthology.org/2024.inlg-main.38/,2021-2025,evaluation; referring expression generation,TRUE,TRUE
+Large Language Models Are Poor Clinical Decision-Makers: A Comprehensive Benchmark,https://aclanthology.org/2024.emnlp-main.759/,2021-2025,evaluation,TRUE,TRUE
+Visualize Before You Write: Imagination-Guided Open-Ended Text Generation,https://aclanthology.org/2023.findings-eacl.5/,2021-2025,story generation,TRUE,TRUE
+"{MAR}i{A} at {S}em{E}val 2024 Task-6: Hallucination Detection Through {LLM}s, {MNLI}, and Cosine similarity",https://aclanthology.org/2024.semeval-1.225/,2021-2025,hallucination detection,TRUE,TRUE
+{A}ra{H}allu{E}val: A Fine-grained Hallucination Evaluation Framework for {A}rabic {LLM}s,https://aclanthology.org/2025.arabicnlp-main.12/,2021-2025,evaluation; hallucination detection,TRUE,TRUE
+Hallucination Mitigation in Natural Language Generation from Large-Scale Open-Domain Knowledge Graphs,https://aclanthology.org/2023.emnlp-main.770/,2021-2025,hallucination detection,TRUE,TRUE
+"{NL}o{RA}: Nystr{\""o}m-Initiated Low-Rank Adaptation for Large Language Models",https://aclanthology.org/2025.findings-emnlp.72/,2021-2025,,FALSE,FALSE
+Proceedings of the 16th International Natural Language Generation Conference,https://aclanthology.org/2023.inlg-main.0/,2021-2025,,FALSE,FALSE
+Natural Language Generation in the Logos Model,https://aclanthology.org/2023.multi3generation-1.5/,2021-2025,,TRUE,TRUE
+Proceedings of the 15th International Conference on Natural Language Generation: Generation Challenges,https://aclanthology.org/2022.inlg-genchal.0/,2021-2025,,FALSE,FALSE
+{FOCUS}: Forging Originality through Contrastive Use in Self-Plagiarism for Language Models,https://aclanthology.org/2024.findings-acl.858/,2021-2025,,FALSE,FALSE
+Finetuning Pretrained Transformers into {RNN}s,https://aclanthology.org/2021.emnlp-main.830/,2021-2025,,FALSE,FALSE
+{L}ogit{R}outer: a novel Attention variant for reducing Myopic Routing in Mixture of Experts,https://aclanthology.org/2025.inlg-main.30/,2021-2025,,FALSE,FALSE
+Correcting Texts Generated by Transformers using Discourse Features and Web Mining,https://aclanthology.org/2021.ranlp-srw.6/,2021-2025,,FALSE,FALSE
+Geographical Erasure in Language Generation,https://aclanthology.org/2023.findings-emnlp.823/,2021-2025,,FALSE,FALSE
+Proceedings of the First Workshop on Natural Language Generation in Healthcare,https://aclanthology.org/2022.nlg4health-1.0/,2021-2025,,FALSE,FALSE
+{D}.{V}a: Validate Your Demonstration First Before You Use It,https://aclanthology.org/2025.acl-long.129/,2021-2025,,FALSE,FALSE
+Reverse-Engineering Decoding Strategies Given Blackbox Access to a Language Generation System,https://aclanthology.org/2023.inlg-main.28/,2021-2025,,FALSE,FALSE
+"{CSP}aper Review: Fast, Rubric-Faithful Conference Feedback",https://aclanthology.org/2025.inlg-demos.2/,2021-2025,,FALSE,FALSE
+{CULG}: Commercial Universal Language Generation,https://aclanthology.org/2022.naacl-industry.14/,2021-2025,,TRUE,TRUE
+On the alignment of {LM} language generation and human language comprehension,https://aclanthology.org/2024.blackboxnlp-1.14/,2021-2025,,FALSE,FALSE
