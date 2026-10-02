@@ -14,4 +14,15 @@ Run the program with ```python bibscraper.py```.
 
 ## Citation
 
-```TBA```
+```
+@article{calo2026future,
+  author  = {Calò, Eduardo and Mahamood, Saad},
+  title   = {The Future of Natural Language Generation in the Age of Large Language Models},
+  journal = {Northern European Journal of Language Technology},
+  volume  = {12},
+  number  = {1},
+  year    = {2026},
+  doi     = {10.3384/nejlt.2000-1533.2026.6529},
+  url     = {https://doi.org/10.3384/nejlt.2000-1533.2026.6529}
+}
+```
